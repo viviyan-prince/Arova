@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import type { CatalogProduct } from '@/types/catalog';
 
+const uuidish = z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
+
 // ---------------------------------------------------------------------------
 // Query — product search (exact + semantic)
 // ---------------------------------------------------------------------------
@@ -28,7 +30,7 @@ export const AgentQueryRequestSchema = z.object({
       attributes: z.record(z.string(), z.any()).optional(),
     })
     .optional(),
-  session_id: z.string().uuid().optional(),
+  session_id: uuidish.optional(),
 });
 
 export type AgentQueryRequestInput = z.infer<typeof AgentQueryRequestSchema>;
@@ -53,10 +55,10 @@ export interface AgentNegotiateRequest {
 
 export const AgentNegotiateRequestSchema = z.object({
   slug: z.string().min(1),
-  product_id: z.string().uuid(),
+  product_id: uuidish,
   quantity: z.number().int().positive(),
   proposed_price: z.number().positive().finite(),
-  session_id: z.string().uuid().optional(),
+  session_id: uuidish.optional(),
 });
 
 export type AgentNegotiateRequestInput = z.infer<typeof AgentNegotiateRequestSchema>;
@@ -88,14 +90,14 @@ export const AgentCheckoutRequestSchema = z.object({
   items: z
     .array(
       z.object({
-        product_id: z.string().uuid(),
+        product_id: uuidish,
         quantity: z.number().int().positive(),
         agreed_price: z.number().positive().finite(),
       }),
     )
     .min(1),
   payment_method: z.string().optional(),
-  session_id: z.string().uuid().optional(),
+  session_id: uuidish.optional(),
 });
 
 export type AgentCheckoutRequestInput = z.infer<typeof AgentCheckoutRequestSchema>;

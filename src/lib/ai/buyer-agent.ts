@@ -267,7 +267,7 @@ export async function* runBuyerAgent(
           status: 'complete',
           data: { product: selectedProduct },
           ai_involved: true,
-          ai_model: 'llama-3.3-70b-versatile',
+          ai_model: 'gpt-oss-120b',
           reasoning: selectResult.reasoning ?? 'AI selected best match',
           latency_ms: Date.now() - stepStart,
         };
@@ -353,7 +353,7 @@ export async function* runBuyerAgent(
               agreed_price: agreedPrice,
             },
             ai_involved: true,
-            ai_model: 'llama-3.3-70b-versatile',
+            ai_model: 'gpt-oss-120b',
             reasoning: `${negData.status}: ${negData.reasoning}`,
             latency_ms: Date.now() - stepStart,
           };
@@ -369,7 +369,7 @@ export async function* runBuyerAgent(
               agreed_price: agreedPrice,
             },
             ai_involved: true,
-            ai_model: 'llama-3.3-70b-versatile',
+            ai_model: 'gpt-oss-120b',
             reasoning: negotiateDecision.reasoning,
             latency_ms: Date.now() - stepStart,
           };
@@ -386,7 +386,7 @@ export async function* runBuyerAgent(
             agreed_price: agreedPrice,
           },
           ai_involved: true,
-          ai_model: 'llama-3.3-70b-versatile',
+          ai_model: 'gpt-oss-120b',
           reasoning: negotiateDecision.reasoning ?? 'Price within acceptable range',
           latency_ms: Date.now() - stepStart,
         };

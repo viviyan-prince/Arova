@@ -25,7 +25,7 @@ export async function callGroq(
 
   try {
     const completion = await client.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
+      model: 'openai/gpt-oss-120b',
       messages: messages as Array<{ role: 'system' | 'user' | 'assistant'; content: string }>,
       temperature: options?.temperature ?? 0.7,
       max_tokens: options?.max_tokens ?? 2048,

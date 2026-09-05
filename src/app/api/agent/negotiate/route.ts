@@ -82,13 +82,15 @@ export async function POST(request: Request): Promise<NextResponse> {
       console.error('[Negotiate] Failed to fetch rules:', rulesError.message);
     }
 
-    const compiledRules: CompiledRule[] = (rules ?? []).map((r: any) => ({
-      id: r.id,
-      type: r.type,
-      condition: r.condition,
-      action: r.action,
-      priority: r.priority ?? 0,
-    }));
+    const compiledRules: CompiledRule[] = (rules ?? [])
+      .filter((r: any) => r.compiled_rule && r.is_active)
+      .map((r: any) => ({
+        id: r.id,
+        type: r.compiled_rule.type,
+        condition: r.compiled_rule.condition,
+        action: r.compiled_rule.action,
+        priority: r.priority ?? 0,
+      }));
 
     // --- Run deterministic negotiation engine ---
     const result = negotiate({

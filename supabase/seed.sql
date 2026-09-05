@@ -260,14 +260,16 @@ VALUES
 -- 3. Commerce Rules (5 rules in plain English + compiled JSONB)
 -- =========================================================================
 
-INSERT INTO commerce_rules (id, merchant_id, rule_type, description, compiled_rule, priority, is_active)
+INSERT INTO commerce_rules (id, merchant_id, rule_type, rule_text, compiled_rule, is_compiled, test_results, priority, is_active)
 VALUES
 (
   '22222222-2222-2222-2222-222222222201',
   'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   'negotiation',
   'Allow up to 10% discount on orders with quantity 3 or more of the same item',
-  '{"condition": {"field": "quantity", "operator": "gte", "value": 3}, "action": {"type": "apply_discount", "parameters": {"max_discount_pct": 10}}}'::jsonb,
+  '{"type": "negotiation", "condition": {"field": "quantity", "operator": "gte", "value": 3}, "action": {"type": "apply_discount", "parameters": {"max_discount_percent": 10}}}'::jsonb,
+  TRUE,
+  NULL,
   100,
   TRUE
 ),
@@ -276,7 +278,9 @@ VALUES
   'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   'negotiation',
   'Allow up to 15% discount on orders totalling more than 10000 INR',
-  '{"condition": {"field": "order_total", "operator": "gt", "value": 10000}, "action": {"type": "apply_discount", "parameters": {"max_discount_pct": 15}}}'::jsonb,
+  '{"type": "negotiation", "condition": {"field": "order_total", "operator": "gt", "value": 10000}, "action": {"type": "apply_discount", "parameters": {"max_discount_percent": 15}}}'::jsonb,
+  TRUE,
+  NULL,
   90,
   TRUE
 ),
@@ -285,7 +289,9 @@ VALUES
   'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   'pricing',
   'Reject any negotiated price that is more than 20% below the listed price',
-  '{"condition": {"field": "discount_pct", "operator": "gt", "value": 20}, "action": {"type": "reject", "parameters": {"reason": "Maximum allowable discount is 20%"}}}'::jsonb,
+  '{"type": "pricing", "condition": {"field": "discount_pct", "operator": "gt", "value": 20}, "action": {"type": "reject", "parameters": {"reason": "Maximum allowable discount is 20%"}}}'::jsonb,
+  TRUE,
+  NULL,
   200,
   TRUE
 ),
@@ -294,7 +300,9 @@ VALUES
   'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   'shipping',
   'Free shipping on orders above 2000 INR',
-  '{"condition": {"field": "order_total", "operator": "gte", "value": 2000}, "action": {"type": "modify", "parameters": {"shipping_cost": 0, "reason": "Free shipping on orders above INR 2000"}}}'::jsonb,
+  '{"type": "shipping", "condition": {"field": "order_total", "operator": "gte", "value": 2000}, "action": {"type": "modify", "parameters": {"shipping_cost": 0, "reason": "Free shipping on orders above INR 2000"}}}'::jsonb,
+  TRUE,
+  NULL,
   50,
   TRUE
 ),
@@ -303,7 +311,9 @@ VALUES
   'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   'acceptance',
   'Auto-accept orders where the proposed price is within 5% of the listed price',
-  '{"condition": {"field": "discount_pct", "operator": "lte", "value": 5}, "action": {"type": "accept", "parameters": {"auto": true, "reason": "Price within auto-accept threshold"}}}'::jsonb,
+  '{"type": "acceptance", "condition": {"field": "discount_pct", "operator": "lte", "value": 5}, "action": {"type": "accept", "parameters": {"auto": true, "reason": "Price within auto-accept threshold"}}}'::jsonb,
+  TRUE,
+  NULL,
   150,
   TRUE
 );

@@ -33,6 +33,33 @@ Open [http://localhost:3000/demo](http://localhost:3000/demo) to run the buyer-a
 
 ---
 
+## Key Features
+
+### 🤖 Buyer Agent Protocol
+Complete 6-step protocol: **Discover → Query → Select → Negotiate → Checkout → Payment**
+
+### 💰 Price Negotiation with Discounts
+- Deterministic rule-based negotiation (no AI in pricing)
+- Visual discount breakdown: Original Price → Discount % → Final Price
+- Accept/Counter/Reject flows with reasoning
+- Example: ₹4,999 → 10% off → ₹4,499 (Save ₹500)
+
+### 🎨 Premium Fintech UI
+- Cursor-reactive spotlight effects on cards
+- Magnetic button interactions for CTAs
+- Animated KPI number transitions
+- Toast notifications for actions
+- Full accessibility support (reduced motion, focus states)
+
+### 📊 Full Audit Trail
+Every action logged with:
+- AI-involvement flags
+- Model identifiers
+- Decision reasoning
+- Latency metrics
+
+---
+
 ## Architecture Overview
 
 ```
@@ -197,6 +224,39 @@ src/
 scripts/
   generate-synthetic-data.ts   # Seed data generator
 ```
+
+---
+
+## Demo Script
+
+### Test Price Negotiation
+1. Go to `/demo`
+2. Type: "running shoes under 5000"
+3. Watch the agent:
+   - Find ProStride shoes (₹4,999)
+   - Propose discount (₹4,499)
+   - System accepts (10% off)
+   - Shows breakdown with savings
+
+### View Dashboard
+1. Go to `/dashboard`
+2. See KPIs with AI/Deterministic split
+3. Check recent activity with latency metrics
+4. Navigate to Catalog, Rules, Audit pages
+
+---
+
+## Deployment
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete deployment guide.
+
+**Quick Deploy to Vercel:**
+```bash
+npm i -g vercel
+vercel --prod
+```
+
+Then add environment variables in Vercel dashboard.
 
 ---
 

@@ -67,6 +67,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       .update({
         compiled_rule,
         test_results,
+        is_compiled: true,
         updated_at: new Date().toISOString(),
       })
       .eq('id', rule_id)

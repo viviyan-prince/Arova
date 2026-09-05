@@ -1,31 +1,49 @@
 @import "tailwindcss";
 
 :root {
-  --background: #030712;
-  --foreground: #f3f4f6;
-  --muted: #6b7280;
+  --background: #09090b;
+  --foreground: #fafafa;
+  --muted: #71717a;
+  --muted-foreground: #a1a1aa;
   --accent: #6366f1;
   --accent-hover: #818cf8;
-  --surface: #111827;
-  --surface-hover: #1f2937;
-  --border: #1f2937;
+  --accent-subtle: rgba(99, 102, 241, 0.08);
+  --surface: #18181b;
+  --surface-raised: #1c1c21;
+  --surface-hover: #27272a;
+  --border: #27272a;
+  --border-subtle: #1e1e22;
   --success: #22c55e;
+  --success-subtle: rgba(34, 197, 94, 0.1);
   --warning: #f59e0b;
+  --warning-subtle: rgba(245, 158, 11, 0.1);
   --error: #ef4444;
+  --error-subtle: rgba(239, 68, 68, 0.1);
+  --info: #3b82f6;
+  --info-subtle: rgba(59, 130, 246, 0.1);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
+  --color-accent-subtle: var(--accent-subtle);
   --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
   --color-surface-hover: var(--surface-hover);
   --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
   --color-success: var(--success);
+  --color-success-subtle: var(--success-subtle);
   --color-warning: var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
   --color-error: var(--error);
+  --color-error-subtle: var(--error-subtle);
+  --color-info: var(--info);
+  --color-info-subtle: var(--info-subtle);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -33,24 +51,216 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
 }
 
-/* Scrollbar styling for dark theme */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted);
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--surface) 25%, var(--surface-hover) 50%, var(--surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.2s ease-out forwards;
+}
+
+/* Premium Interaction Enhancements */
+
+/* Cursor spotlight effect - very subtle radial gradient following cursor */
+.cursor-spotlight {
+  position: relative;
+  overflow: hidden;
+}
+
+.cursor-spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(99, 102, 241, 0.03),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .cursor-spotlight:hover::before {
+    opacity: 1;
+  }
+}
+
+/* Card hover elevation */
+.card-hover {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .card-hover:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* Magnetic button effect */
+.magnetic-button {
+  position: relative;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .magnetic-button:hover {
+    transform: translate(
+      calc(var(--magnetic-x, 0) * 4px),
+      calc(var(--magnetic-y, 0) * 4px)
+    );
+  }
+}
+
+/* Number counter animation */
+@keyframes number-change {
+  0% { opacity: 0.5; transform: translateY(-4px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.number-animate {
+  animation: number-change 0.3s ease-out;
+}
+
+/* Glow pulse for AI indicators */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Staggered fade-in for lists */
+@keyframes stagger-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stagger-item {
+  animation: stagger-fade-in 0.4s ease-out backwards;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0ms; }
+.stagger-item:nth-child(2) { animation-delay: 50ms; }
+.stagger-item:nth-child(3) { animation-delay: 100ms; }
+.stagger-item:nth-child(4) { animation-delay: 150ms; }
+.stagger-item:nth-child(5) { animation-delay: 200ms; }
+.stagger-item:nth-child(6) { animation-delay: 250ms; }
+
+/* Focus states */
+.focus-ring {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: outline-color 0.2s;
+}
+
+.focus-ring:focus-visible {
+  outline-color: var(--accent);
+}
+
+/* Smooth border transitions */
+.border-transition {
+  transition: border-color 0.2s ease;
+}
+
+/* Icon movement on hover */
+.icon-shift {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .icon-shift:hover {
+    transform: translateX(2px);
+  }
+}
+
+/* Toast notification animations */
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toast-exit {
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+}
+
+.toast-enter {
+  animation: toast-enter 0.2s ease-out;
+}
+
+.toast-exit {
+  animation: toast-exit 0.15s ease-in forwards;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .cursor-spotlight::before,
+  .magnetic-button {
+    transition: none !important;
+    transform: none !important;
+  }
 }

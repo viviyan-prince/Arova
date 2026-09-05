@@ -1,108 +1,134 @@
 import Link from 'next/link';
-
-const features = [
-  {
-    title: 'Agent-Readable Catalog',
-    description:
-      'AI-generated semantic descriptions and JSON-LD markup make your products discoverable by any buyer agent.',
-    icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
-  },
-  {
-    title: 'Smart Negotiation Rules',
-    description:
-      'Write pricing and discount rules in plain English. We compile them into deterministic logic — no AI in the money path.',
-    icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4',
-  },
-  {
-    title: 'Complete Audit Trail',
-    description:
-      'Every action logged with AI-involvement flags, model identifiers, decision reasoning, and millisecond-level latency.',
-    icon: 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
-  },
-];
+import { MagneticButton } from '@/components/ui/magnetic-button';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col">
-      {/* Hero */}
-      <section className="flex-1 flex flex-col items-center justify-center px-6 py-24 text-center">
-        <div className="max-w-3xl mx-auto">
-          {/* Buildathon badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gray-700 bg-gray-900 text-xs text-gray-300 mb-8">
-            <svg
-              className="w-4 h-4 text-indigo-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 10V3L4 14h7v7l9-11h-7z"
-              />
-            </svg>
-            Razorpay AI Buildathon &mdash; Track 01
+    <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
+      {/* Nav */}
+      <header className="fixed top-0 inset-x-0 z-50 border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl">
+        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
+              <span className="text-white text-xs font-bold">A</span>
+            </div>
+            <span className="text-[15px] font-semibold tracking-tight">Arova</span>
           </div>
-
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-tight">
-            Arova
-          </h1>
-          <p className="mt-2 text-lg sm:text-xl text-indigo-400 font-medium">
-            The Missing On-Ramp for Agentic Commerce
-          </p>
-          <p className="mt-4 text-base sm:text-lg text-gray-400 max-w-xl mx-auto leading-relaxed">
-            Make your Razorpay store discoverable and transactable by AI buyer
-            agents. 80% deterministic logic, 20% AI intelligence.
-          </p>
-
-          <div className="flex items-center justify-center gap-4 mt-8">
+          <div className="flex items-center gap-3">
             <Link
               href="/demo"
-              className="px-6 py-3 rounded-lg bg-indigo-600 text-white font-medium text-sm hover:bg-indigo-500 transition-colors"
+              className="text-[13px] text-zinc-400 hover:text-white transition-colors px-3 py-1.5"
             >
-              Try Demo
+              Demo
             </Link>
             <Link
               href="/dashboard"
-              className="px-6 py-3 rounded-lg border border-gray-700 text-gray-300 font-medium text-sm hover:bg-gray-900 transition-colors"
+              className="text-[13px] font-medium bg-white text-zinc-900 hover:bg-zinc-200 px-4 py-1.5 rounded-lg transition-colors"
             >
               Dashboard
             </Link>
           </div>
         </div>
+      </header>
+
+      {/* Hero */}
+      <section className="flex-1 flex flex-col items-center justify-center px-6 pt-32 pb-20 text-center">
+        <div className="max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-800 bg-zinc-900/50 text-[12px] text-zinc-400 mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+            Razorpay AI Buildathon &mdash; Track 01
+          </div>
+
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight leading-[1.1]">
+            The missing on-ramp for{' '}
+            <span className="text-indigo-400">agentic commerce</span>
+          </h1>
+
+          <p className="mt-4 text-base text-zinc-400 max-w-lg mx-auto leading-relaxed">
+            Make your Razorpay store discoverable and transactable by AI buyer agents.
+            80% deterministic logic. 20% AI intelligence. Zero AI in the money path.
+          </p>
+
+          <div className="flex items-center justify-center gap-3 mt-8">
+            <Link href="/demo">
+              <MagneticButton variant="primary">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+                </svg>
+                Try Live Demo
+              </MagneticButton>
+            </Link>
+            <Link href="/dashboard">
+              <MagneticButton variant="secondary">
+                Open Dashboard
+              </MagneticButton>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="px-6 pb-20">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-[12px] font-medium text-zinc-500 uppercase tracking-wider text-center mb-3">How it works</p>
+          <h2 className="text-xl font-semibold text-center text-white mb-10">Agent protocol in 6 steps</h2>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 stagger-children">
+            {[
+              { step: '01', name: 'Discover', desc: 'Agent finds your store', type: 'det' },
+              { step: '02', name: 'Query', desc: 'Search your catalog', type: 'ai' },
+              { step: '03', name: 'Select', desc: 'AI picks best match', type: 'ai' },
+              { step: '04', name: 'Negotiate', desc: 'Rule-based pricing', type: 'det' },
+              { step: '05', name: 'Checkout', desc: 'Razorpay order', type: 'det' },
+              { step: '06', name: 'Payment', desc: 'Secure payment link', type: 'det' },
+            ].map((s, idx) => (
+              <div
+                key={s.step}
+                className="bg-zinc-900/50 border border-zinc-800/60 rounded-xl p-4 text-center card-hover border-transition hover:border-zinc-700/60 stagger-item"
+                style={{ animationDelay: `${idx * 50}ms` }}
+              >
+                <span className="text-[11px] font-mono text-zinc-600">{s.step}</span>
+                <p className="text-[13px] font-semibold text-white mt-1">{s.name}</p>
+                <p className="text-[11px] text-zinc-500 mt-0.5">{s.desc}</p>
+                <span className={`inline-block mt-2 text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                  s.type === 'ai' ? 'bg-amber-500/10 text-amber-400' : 'bg-emerald-500/10 text-emerald-400'
+                }`}>
+                  {s.type === 'ai' ? 'AI' : 'Deterministic'}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Features */}
-      <section className="px-6 py-20 border-t border-gray-800">
+      <section className="px-6 pb-20 border-t border-zinc-800/50 pt-16">
         <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((feature) => (
-              <div
-                key={feature.title}
-                className="bg-gray-900 rounded-xl p-6 border border-gray-800"
-              >
-                <div className="w-10 h-10 rounded-lg bg-indigo-600/20 flex items-center justify-center mb-4">
-                  <svg
-                    className="w-5 h-5 text-indigo-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d={feature.icon}
-                    />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-children">
+            {[
+              {
+                title: 'Agent-Readable Catalog',
+                desc: 'AI-generated semantic descriptions and Schema.org JSON-LD make your products discoverable by any buyer agent.',
+                icon: 'M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z',
+              },
+              {
+                title: 'Deterministic Negotiation',
+                desc: 'Write pricing rules in plain English. Gemini compiles them to structured logic. No AI in the money path — ever.',
+                icon: 'M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0012 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 01-2.031.352 5.988 5.988 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 01-2.031.352 5.989 5.989 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971z',
+              },
+              {
+                title: 'Full Audit Trail',
+                desc: 'Every action logged with AI-involvement flags, model identifiers, decision reasoning, and millisecond latency.',
+                icon: 'M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z',
+              },
+            ].map((f, idx) => (
+              <div key={f.title} className="p-5 stagger-item" style={{ animationDelay: `${idx * 50}ms` }}>
+                <div className="w-9 h-9 rounded-lg bg-indigo-600/10 flex items-center justify-center mb-3">
+                  <svg className="w-[18px] h-[18px] text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d={f.icon} />
                   </svg>
                 </div>
-                <h3 className="text-base font-semibold text-white mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-sm text-gray-400 leading-relaxed">
-                  {feature.description}
-                </p>
+                <h3 className="text-[14px] font-semibold text-white mb-1.5">{f.title}</h3>
+                <p className="text-[13px] text-zinc-500 leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -110,10 +136,9 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="px-6 py-6 border-t border-gray-800 text-center">
-        <p className="text-xs text-gray-600">
-          Built for Razorpay AI Buildathon Track 01 &mdash; Agentic Commerce
-          On-Ramp
+      <footer className="px-6 py-5 border-t border-zinc-800/50">
+        <p className="text-[12px] text-zinc-600 text-center">
+          Built for Razorpay AI Buildathon &mdash; Agentic Commerce On-Ramp
         </p>
       </footer>
     </div>

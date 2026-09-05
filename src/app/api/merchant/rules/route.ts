@@ -110,6 +110,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         is_active: true,
         compiled_rule: null,
         test_results: null,
+        is_compiled: false,
       })
       .select('*')
       .single();

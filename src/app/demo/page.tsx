@@ -5,6 +5,8 @@ import BuyerAgentChat from '@/components/simulator/buyer-agent-chat';
 import StepVisualizer from '@/components/simulator/step-visualizer';
 import AgentIdentityCard from '@/components/simulator/agent-identity-card';
 import { BuyerAgentStep } from '@/lib/ai/buyer-agent';
+import Link from 'next/link';
+import { MagneticButton } from '@/components/ui/magnetic-button';
 
 export default function DemoPage() {
   const [intent, setIntent] = useState('');
@@ -65,7 +67,6 @@ export default function DemoPage() {
                 return [...prev, step];
               });
 
-              // Add agent message for completed steps
               if (step.status === 'complete') {
                 let content = '';
                 switch (step.name) {
@@ -82,20 +83,34 @@ export default function DemoPage() {
                     if (step.data.skipped) {
                       content = `Price acceptable. Proceeding at ₹${step.data.agreed_price}`;
                     } else {
-                      content = `Negotiation ${step.data.negotiation_result?.status}: Final price ₹${step.data.agreed_price}`;
+                      const negotiation = step.data.negotiation_result;
+                      const originalPrice = step.data.original_price || 0;
+                      const finalPrice = step.data.agreed_price || 0;
+                      const discount = originalPrice > 0 ? Math.round(((originalPrice - finalPrice) / originalPrice) * 100) : 0;
+
+                      if (negotiation?.status === 'accepted' && discount > 0) {
+                        content = `✅ Negotiation successful!\n\nOriginal Price: ₹${originalPrice}\nDiscount: ${discount}%\nFinal Price: ₹${finalPrice}\n\n${negotiation.reasoning || ''}`;
+                      } else if (negotiation?.status === 'accepted') {
+                        content = `✅ Price accepted at ₹${finalPrice}`;
+                      } else if (negotiation?.status === 'counter_offer') {
+                        content = `💬 Counter-offer: ₹${negotiation.counter_offer}\n\n${negotiation.reasoning || ''}`;
+                      } else if (negotiation?.status === 'rejected') {
+                        content = `❌ Negotiation rejected\n\n${negotiation.reasoning || ''}`;
+                      } else {
+                        content = `Negotiation ${negotiation?.status}: Final price ₹${finalPrice}`;
+                      }
                     }
                     break;
                   case 'CHECKOUT':
                     content = `Order created: ${step.data.order_id}`;
                     break;
                   case 'PAYMENT':
-                    content = `Payment link generated. Amount: ₹${step.data.amount / 100}`;
+                    content = `Payment link ready. Amount: ₹${step.data.amount / 100}`;
                     break;
                 }
 
                 setMessages((prev) => [...prev, { role: 'agent', content, step }]);
 
-                // Update trust score on successful completion
                 if (step.step === 6 && step.status === 'complete') {
                   setTrustScore((prev) => Math.min(100, prev + 10));
                 }
@@ -132,59 +147,125 @@ export default function DemoPage() {
     runSimulation();
   };
 
+  const suggestions = [
+    'running shoes under 5000',
+    'gym gloves',
+    'yoga mat for beginners',
+    'water bottle for cycling',
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col">
+    <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
       {/* Header */}
-      <header className="border-b border-gray-800 bg-gray-900/60 backdrop-blur px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <header className="border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl px-6 h-14 flex items-center shrink-0">
+        <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold">Arova Demo</h1>
-            <span className="text-gray-600">|</span>
-            <span className="text-sm text-gray-400">AI Buyer Agent Simulation</span>
+            <Link href="/" className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
+                <span className="text-white text-xs font-bold">A</span>
+              </div>
+              <span className="text-[15px] font-semibold tracking-tight">Arova</span>
+            </Link>
+            <span className="text-zinc-700">|</span>
+            <span className="text-[13px] text-zinc-500">Buyer Agent Simulation</span>
           </div>
-          <div className="text-xs text-gray-500 bg-gray-900 px-3 py-1.5 rounded-full border border-gray-800">
-            Powered by Razorpay Test Mode
+          <div className="flex items-center gap-3">
+            <span className="text-[11px] text-zinc-600 bg-zinc-900 px-2.5 py-1 rounded-full border border-zinc-800/60">
+              Razorpay Test Mode
+            </span>
+            <Link
+              href="/dashboard"
+              className="text-[13px] text-zinc-400 hover:text-white transition-colors"
+            >
+              Dashboard
+            </Link>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        <div className="flex-1 max-w-7xl mx-auto w-full flex gap-6 p-6">
+        <div className="flex-1 max-w-7xl mx-auto w-full flex gap-5 p-5">
           {/* Left: Chat */}
           <div className="flex-1 flex flex-col min-w-0">
-            <div className="flex-1 bg-gray-900 rounded-xl border border-gray-800 flex flex-col overflow-hidden">
-              <div className="p-4 border-b border-gray-800">
-                <h2 className="text-sm font-semibold text-gray-300">Agent Conversation</h2>
+            <div className="flex-1 bg-zinc-900/50 border border-zinc-800/60 rounded-xl flex flex-col overflow-hidden">
+              <div className="px-5 py-3 border-b border-zinc-800/40 flex items-center justify-between">
+                <h2 className="text-[13px] font-semibold text-zinc-300">Agent Conversation</h2>
+                {isRunning && (
+                  <span className="flex items-center gap-1.5 text-[11px] text-indigo-400">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+                    Processing
+                  </span>
+                )}
               </div>
+
               <div className="flex-1 overflow-auto">
-                <BuyerAgentChat messages={messages} />
+                {messages.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-full px-6 text-center">
+                    <div className="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center mb-4">
+                      <svg className="w-6 h-6 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                      </svg>
+                    </div>
+                    <p className="text-sm font-medium text-zinc-300 mb-1">Start a simulation</p>
+                    <p className="text-[12px] text-zinc-500 max-w-xs mb-5">
+                      Tell the AI buyer agent what you want to purchase.
+                    </p>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {suggestions.map((s, idx) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => { setIntent(s); }}
+                          className="text-[12px] text-zinc-400 bg-zinc-800/60 hover:bg-zinc-800 border border-zinc-700/40 hover:border-zinc-600/40 px-3 py-1.5 rounded-lg border-transition stagger-item"
+                          style={{ animationDelay: `${idx * 50}ms` }}
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <BuyerAgentChat messages={messages} />
+                )}
               </div>
-              <form onSubmit={handleSubmit} className="p-4 border-t border-gray-800">
-                <div className="flex gap-3">
+
+              <form onSubmit={handleSubmit} className="px-4 py-3 border-t border-zinc-800/40">
+                <div className="flex gap-2">
                   <input
                     type="text"
                     value={intent}
                     onChange={(e) => setIntent(e.target.value)}
-                    placeholder="What would you like to buy? (e.g., running shoes under 1500)"
-                    className="flex-1 bg-gray-950 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-600"
+                    placeholder="What would you like to buy?"
+                    className="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-[13px] text-white placeholder-zinc-600 focus-ring focus:border-indigo-500/40 border-transition"
                     disabled={isRunning}
                   />
-                  <button
+                  <MagneticButton
                     type="submit"
                     disabled={isRunning || !intent.trim()}
-                    className="px-6 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    variant="primary"
                   >
-                    {isRunning ? 'Running...' : 'Send'}
-                  </button>
+                    {isRunning ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Running
+                      </>
+                    ) : (
+                      'Send'
+                    )}
+                  </MagneticButton>
                 </div>
               </form>
             </div>
           </div>
 
           {/* Right: Pipeline + Agent Card */}
-          <div className="w-80 flex flex-col gap-6">
-            <AgentIdentityCard sessionId={sessionId} trustScore={trustScore} status={isRunning ? 'active' : steps.length > 0 ? 'completed' : 'ready'} />
+          <div className="w-72 flex flex-col gap-4 shrink-0">
+            <AgentIdentityCard
+              sessionId={sessionId}
+              trustScore={trustScore}
+              status={isRunning ? 'active' : steps.length > 0 ? 'completed' : 'ready'}
+            />
             <StepVisualizer steps={steps} />
           </div>
         </div>

@@ -110,12 +110,12 @@ export async function POST(request: Request): Promise<NextResponse> {
     }
 
     const compiledRules: CompiledRule[] = (rules ?? [])
-      .filter((r: any) => r.type === 'acceptance')
+      .filter((r: any) => r.compiled_rule && r.is_active && r.compiled_rule.type === 'acceptance')
       .map((r: any) => ({
         id: r.id,
-        type: r.type,
-        condition: r.condition,
-        action: r.action,
+        type: r.compiled_rule.type,
+        condition: r.compiled_rule.condition,
+        action: r.compiled_rule.action,
         priority: r.priority ?? 0,
       }));
 

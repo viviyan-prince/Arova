@@ -3,7 +3,7 @@
 
 CREATE TABLE IF NOT EXISTS transactions (
   id                   UUID          PRIMARY KEY DEFAULT gen_random_uuid(),
-  session_id           UUID          NOT NULL REFERENCES agent_sessions(id),
+  session_id           UUID          REFERENCES agent_sessions(id),
   merchant_id          UUID          NOT NULL REFERENCES merchants(id) ON DELETE CASCADE,
   razorpay_order_id    TEXT          NOT NULL,
   razorpay_payment_id  TEXT,

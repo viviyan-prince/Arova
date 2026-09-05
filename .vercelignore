@@ -1,0 +1,30 @@
+# Files to ignore during Vercel deployment
+
+# Environment
+.env.local
+.env*.local
+
+# Development
+.vscode
+.idea
+*.log
+npm-debug.log*
+
+# Testing
+coverage
+.nyc_output
+
+# Misc
+.DS_Store
+*.pem
+
+# Documentation (keep for GitHub, exclude from deployment)
+DEPLOYMENT.md
+scripts/deploy-checklist.sh
+
+# Database
+*.db
+*.sqlite
+
+# Don't deploy seed scripts to production
+scripts/generate-synthetic-data.ts
