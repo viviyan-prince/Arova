@@ -1,9 +1,15 @@
 import Link from 'next/link';
 import { MagneticButton } from '@/components/ui/magnetic-button';
+import { HeroConsole } from '@/components/landing/hero-console';
+import { AIDeterministicSplit } from '@/components/landing/ai-deterministic-split';
+import { CinematicParticleField } from '@/components/hero/cinematic-particle-field';
+import { CursorTrail } from '@/components/hero/cursor-trail';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
+    <div className="min-h-screen bg-black text-white flex flex-col relative">
+      {/* Cursor Trail */}
+      <CursorTrail />
       {/* Nav */}
       <header className="fixed top-0 inset-x-0 z-50 border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
@@ -31,22 +37,44 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section className="flex-1 flex flex-col items-center justify-center px-6 pt-32 pb-20 text-center">
-        <div className="max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-800 bg-zinc-900/50 text-[12px] text-zinc-400 mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-            Razorpay AI Buildathon &mdash; Track 01
+      <section className="flex-1 flex flex-col items-center justify-center px-6 pt-32 pb-24 text-center relative overflow-hidden min-h-screen">
+        {/* Cinematic Particle Field */}
+        <div className="absolute inset-0">
+          <CinematicParticleField />
+        </div>
+
+        {/* Deep background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-950 to-black pointer-events-none" />
+
+        {/* Subtle navy atmosphere */}
+        <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/10 via-transparent to-transparent pointer-events-none" />
+
+        <div className="max-w-5xl mx-auto relative z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-800 bg-zinc-900/50 text-[11px] text-zinc-400 mb-8 backdrop-blur-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+            Razorpay AI Buildathon — Track 01
           </div>
 
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight leading-[1.1]">
-            The missing on-ramp for{' '}
-            <span className="text-indigo-400">agentic commerce</span>
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] mb-6 animate-fade-in">
+            The missing on-ramp
+            <br />
+            for <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-shimmer">agentic commerce</span>
           </h1>
 
-          <p className="mt-4 text-base text-zinc-400 max-w-lg mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed mb-4">
             Make your Razorpay store discoverable and transactable by AI buyer agents.
-            80% deterministic logic. 20% AI intelligence. Zero AI in the money path.
           </p>
+
+          <p className="text-sm text-zinc-500 max-w-xl mx-auto mb-12">
+            <span className="text-emerald-400 font-medium">80% deterministic logic</span>
+            {' · '}
+            <span className="text-amber-400 font-medium">20% AI intelligence</span>
+            {' · '}
+            <span className="text-zinc-400">Zero AI in the money path</span>
+          </p>
+
+          {/* Hero Console */}
+          <HeroConsole />
 
           <div className="flex items-center justify-center gap-3 mt-8">
             <Link href="/demo">
@@ -99,6 +127,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* AI vs Deterministic */}
+      <AIDeterministicSplit />
 
       {/* Features */}
       <section className="px-6 pb-20 border-t border-zinc-800/50 pt-16">
