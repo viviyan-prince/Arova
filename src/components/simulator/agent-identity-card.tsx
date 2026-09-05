@@ -8,23 +8,30 @@ interface Props {
 
 export default function AgentIdentityCard({ sessionId, trustScore, status }: Props) {
   const statusConfig = {
-    active: { bg: 'bg-indigo-500/10', text: 'text-indigo-400', border: 'border-indigo-500/20', label: 'Active' },
-    completed: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20', label: 'Completed' },
-    blocked: { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/20', label: 'Blocked' },
-    ready: { bg: 'bg-zinc-500/10', text: 'text-zinc-400', border: 'border-zinc-500/20', label: 'Ready' },
+    active: { bg: 'bg-accent/10', text: 'text-accent', border: 'border-accent/20', label: 'Active' },
+    completed: { bg: 'bg-revenue-subtle', text: 'text-revenue', border: 'border-revenue/20', label: 'Completed' },
+    blocked: { bg: 'bg-error-subtle', text: 'text-error', border: 'border-error/20', label: 'Blocked' },
+    ready: { bg: 'bg-surface-raised', text: 'text-muted-foreground', border: 'border-border', label: 'Ready' },
   };
 
   const s = statusConfig[status];
 
-  const trustColor = trustScore >= 70 ? 'bg-emerald-500' : trustScore >= 40 ? 'bg-amber-500' : 'bg-red-500';
-  const trustTextColor = trustScore >= 70 ? 'text-emerald-400' : trustScore >= 40 ? 'text-amber-400' : 'text-red-400';
+  const trustColor = trustScore >= 70 ? 'bg-revenue' : trustScore >= 40 ? 'bg-warning' : 'bg-error';
+  const trustTextColor = trustScore >= 70 ? 'text-revenue' : trustScore >= 40 ? 'text-warning' : 'text-error';
+
+  const trustExplanation =
+    trustScore >= 70
+      ? 'Merchant rules respected, inventory verified, all steps auditable'
+      : trustScore >= 40
+      ? 'Some verification pending'
+      : 'Limited trust — restricted actions';
 
   return (
-    <div className="bg-zinc-900/50 border border-zinc-800/60 rounded-xl p-4">
+    <div className="bg-surface border border-border rounded-xl p-4">
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="text-[13px] font-semibold text-zinc-200">AI Buyer Agent</h3>
-          <p className="text-[11px] text-zinc-600 font-mono mt-0.5">
+          <h3 className="text-[13px] font-semibold text-foreground">AI Shopper</h3>
+          <p className="text-[11px] text-muted font-mono mt-0.5">
             {sessionId.slice(0, 20)}...
           </p>
         </div>
@@ -35,17 +42,20 @@ export default function AgentIdentityCard({ sessionId, trustScore, status }: Pro
 
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[11px] text-zinc-500">Trust Score</span>
+          <span className="text-[11px] text-muted-foreground">Trust Score</span>
           <span className={`text-[13px] font-semibold font-mono ${trustTextColor}`}>
             {trustScore}
           </span>
         </div>
-        <div className="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+        <div className="w-full bg-surface-raised rounded-full h-1.5 overflow-hidden">
           <div
             className={`h-full transition-all duration-500 ${trustColor}`}
             style={{ width: `${trustScore}%` }}
           />
         </div>
+        <p className="text-[10px] text-muted mt-2 leading-relaxed">
+          {trustExplanation}
+        </p>
       </div>
     </div>
   );

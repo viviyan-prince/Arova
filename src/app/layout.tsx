@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/toast";
+import { I18nProvider } from "@/lib/i18n/context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Arova — Agentic Commerce On-Ramp",
-  description: "Make your Razorpay store transactable by AI buyer agents",
+  title: "Arova — AI Sales Layer for Razorpay Merchants",
+  description: "Let AI sell. You stay in control. Make your store discoverable and transactable by AI buyer agents.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -25,9 +26,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <ToastProvider>
-          {children}
-        </ToastProvider>
+        <I18nProvider>
+          <ToastProvider>
+            {children}
+          </ToastProvider>
+        </I18nProvider>
       </body>
     </html>
   );

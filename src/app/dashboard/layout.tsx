@@ -2,7 +2,7 @@ import Sidebar from './_components/sidebar';
 
 export const metadata = {
   title: 'Dashboard | Arova',
-  description: 'Arova merchant dashboard — manage your agent-commerce catalog, rules, and audit trail.',
+  description: 'Your AI store dashboard — products, rules, sales, and activity.',
 };
 
 export default function DashboardLayout({
@@ -11,10 +11,10 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-zinc-950">
+    <div className="flex min-h-screen bg-background">
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
-        <main className="flex-1 p-8 overflow-auto">
+        <main className="flex-1 p-6 lg:p-8 overflow-auto">
           {children}
         </main>
       </div>

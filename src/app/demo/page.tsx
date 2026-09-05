@@ -15,6 +15,8 @@ export default function DemoPage() {
   const [messages, setMessages] = useState<Array<{ role: 'user' | 'agent'; content: string; step?: BuyerAgentStep }>>([]);
   const [sessionId] = useState(() => `session_${Date.now()}`);
   const [trustScore, setTrustScore] = useState(50);
+  const [isListening, setIsListening] = useState(false);
+  const [recognition, setRecognition] = useState<any>(null);
 
   const runSimulation = async () => {
     if (!intent.trim() || isRunning) return;
@@ -154,28 +156,82 @@ export default function DemoPage() {
     'water bottle for cycling',
   ];
 
+  // Initialize speech recognition
+  const initSpeechRecognition = () => {
+    if (typeof window === 'undefined') return null;
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) return null;
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setIntent(transcript);
+      setIsListening(false);
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error('Speech recognition error:', event.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    return recognition;
+  };
+
+  const toggleVoiceInput = () => {
+    if (!recognition) {
+      const newRecognition = initSpeechRecognition();
+      if (!newRecognition) {
+        alert('Voice input is not supported in your browser. Please use Chrome, Edge, or Safari.');
+        return;
+      }
+      setRecognition(newRecognition);
+      newRecognition.start();
+      setIsListening(true);
+    } else {
+      if (isListening) {
+        recognition.stop();
+        setIsListening(false);
+      } else {
+        recognition.start();
+        setIsListening(true);
+      }
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Header */}
-      <header className="border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl px-6 h-14 flex items-center shrink-0">
+      <header className="border-b border-border bg-background/80 backdrop-blur-xl px-6 h-14 flex items-center shrink-0">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
-                <span className="text-white text-xs font-bold">A</span>
+              <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center">
+                <span className="text-foreground text-xs font-bold">A</span>
               </div>
               <span className="text-[15px] font-semibold tracking-tight">Arova</span>
             </Link>
-            <span className="text-zinc-700">|</span>
-            <span className="text-[13px] text-zinc-500">Buyer Agent Simulation</span>
+            <span className="text-border">|</span>
+            <div className="flex items-baseline gap-2">
+              <span className="text-[13px] font-medium text-foreground/80">AI Shopper</span>
+              <span className="text-[11px] text-muted hidden sm:inline">Experience what your store looks like to an autonomous buyer.</span>
+            </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[11px] text-zinc-600 bg-zinc-900 px-2.5 py-1 rounded-full border border-zinc-800/60">
+            <span className="text-[12px] font-medium text-warning bg-warning-subtle px-3 py-1.5 rounded-full border border-warning/20">
               Razorpay Test Mode
             </span>
             <Link
               href="/dashboard"
-              className="text-[13px] text-zinc-400 hover:text-white transition-colors"
+              className="text-[13px] text-muted-foreground hover:text-foreground transition-colors"
             >
               Dashboard
             </Link>
@@ -188,12 +244,12 @@ export default function DemoPage() {
         <div className="flex-1 max-w-7xl mx-auto w-full flex gap-5 p-5">
           {/* Left: Chat */}
           <div className="flex-1 flex flex-col min-w-0">
-            <div className="flex-1 bg-zinc-900/50 border border-zinc-800/60 rounded-xl flex flex-col overflow-hidden">
-              <div className="px-5 py-3 border-b border-zinc-800/40 flex items-center justify-between">
-                <h2 className="text-[13px] font-semibold text-zinc-300">Agent Conversation</h2>
+            <div className="flex-1 bg-surface border border-border rounded-xl flex flex-col overflow-hidden">
+              <div className="px-5 py-3 border-b border-border-subtle flex items-center justify-between">
+                <h2 className="text-[13px] font-semibold text-foreground/80">Agent Conversation</h2>
                 {isRunning && (
-                  <span className="flex items-center gap-1.5 text-[11px] text-indigo-400">
-                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+                  <span className="flex items-center gap-1.5 text-[11px] text-accent">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
                     Processing
                   </span>
                 )}
@@ -202,22 +258,22 @@ export default function DemoPage() {
               <div className="flex-1 overflow-auto">
                 {messages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full px-6 text-center">
-                    <div className="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center mb-4">
-                      <svg className="w-6 h-6 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <div className="w-14 h-14 rounded-xl bg-surface-raised flex items-center justify-center mb-5">
+                      <svg className="w-7 h-7 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
                       </svg>
                     </div>
-                    <p className="text-sm font-medium text-zinc-300 mb-1">Start a simulation</p>
-                    <p className="text-[12px] text-zinc-500 max-w-xs mb-5">
-                      Tell the AI buyer agent what you want to purchase.
+                    <p className="text-base font-medium text-foreground mb-1">Try your store as an AI shopper</p>
+                    <p className="text-[13px] text-muted-foreground max-w-sm mb-6">
+                      Enter what you&apos;re looking for and watch Arova find, negotiate, and purchase.
                     </p>
-                    <div className="flex flex-wrap gap-2 justify-center">
+                    <div className="flex flex-wrap gap-2.5 justify-center">
                       {suggestions.map((s, idx) => (
                         <button
                           key={s}
                           type="button"
                           onClick={() => { setIntent(s); }}
-                          className="text-[12px] text-zinc-400 bg-zinc-800/60 hover:bg-zinc-800 border border-zinc-700/40 hover:border-zinc-600/40 px-3 py-1.5 rounded-lg border-transition stagger-item"
+                          className="text-[13px] text-muted-foreground bg-surface-raised hover:bg-surface-raised/80 border border-border hover:border-border/80 px-4 py-2.5 rounded-xl border-transition stagger-item"
                           style={{ animationDelay: `${idx * 50}ms` }}
                         >
                           {s}
@@ -230,16 +286,43 @@ export default function DemoPage() {
                 )}
               </div>
 
-              <form onSubmit={handleSubmit} className="px-4 py-3 border-t border-zinc-800/40">
+              <form onSubmit={handleSubmit} className="px-4 py-3 border-t border-border-subtle">
                 <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={intent}
-                    onChange={(e) => setIntent(e.target.value)}
-                    placeholder="What would you like to buy?"
-                    className="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-[13px] text-white placeholder-zinc-600 focus-ring focus:border-indigo-500/40 border-transition"
-                    disabled={isRunning}
-                  />
+                  <div className="flex-1 relative">
+                    <input
+                      type="text"
+                      value={intent}
+                      onChange={(e) => setIntent(e.target.value)}
+                      placeholder="What would you like to buy?"
+                      className="w-full bg-background border border-border rounded-lg pl-4 pr-12 py-2.5 text-[13px] text-foreground placeholder-muted focus-ring focus:border-accent/40 border-transition"
+                      disabled={isRunning}
+                    />
+                    <button
+                      type="button"
+                      onClick={toggleVoiceInput}
+                      disabled={isRunning}
+                      className={`absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg transition-all duration-200 focus-ring ${
+                        isListening
+                          ? 'bg-accent text-white animate-pulse'
+                          : 'text-muted-foreground hover:text-accent hover:bg-accent-subtle'
+                      } disabled:opacity-40 disabled:cursor-not-allowed`}
+                      title={isListening ? 'Listening... Click to stop' : 'Click to use voice input'}
+                    >
+                      {isListening ? (
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                          <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                          <circle cx="12" cy="11" r="2" opacity="0.3">
+                            <animate attributeName="r" values="2;3;2" dur="1s" repeatCount="indefinite"/>
+                          </circle>
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
                   <MagneticButton
                     type="submit"
                     disabled={isRunning || !intent.trim()}
@@ -247,7 +330,7 @@ export default function DemoPage() {
                   >
                     {isRunning ? (
                       <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-foreground border-t-transparent rounded-full animate-spin" />
                         Running
                       </>
                     ) : (
