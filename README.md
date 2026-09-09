@@ -20,9 +20,9 @@ cp .env.example .env.local
 # Fill in the values (see Environment Variables below)
 
 # 3. Seed the database
-npx tsx scripts/generate-synthetic-data.ts --sql | psql $DATABASE_URL
-# Or use the JSON output:
-npx tsx scripts/generate-synthetic-data.ts --json
+# Apply the migrations, then load the checked-in seed data in Supabase:
+#   supabase db push
+#   psql "$DATABASE_URL" -f supabase/seed.sql
 
 # 4. Run
 npm run dev
@@ -105,7 +105,7 @@ The system is **80% deterministic** (rule evaluation, pricing math, Razorpay API
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/agent/discover` | Semantic product search |
+| GET | `/api/agent/discover?slug=<merchant-slug>` | Merchant capabilities and discovery metadata |
 | POST | `/api/agent/query` | Structured product queries |
 | POST | `/api/agent/negotiate` | Price negotiation (rule-bound) |
 | POST | `/api/agent/checkout` | Create order + Razorpay payment link |
